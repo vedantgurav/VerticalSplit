@@ -3,8 +3,15 @@ This package is ***heavily*** inspired by the splitscreen impelementation from t
 
 ## Examples
 
-https://github.com/vedantgurav/VerticalSplit/assets/40576802/1a235460-53fd-49c2-935f-51a1fc190376
-https://github.com/vedantgurav/VerticalSplit/assets/40576802/c86c2b49-7636-4a27-9c12-1fd66566537f
+
+
+https://github.com/vedantgurav/VerticalSplit/assets/40576802/003911eb-4cd2-4a56-aba2-b0b51cba07bc
+
+
+https://github.com/vedantgurav/VerticalSplit/assets/40576802/f2b41558-d8d1-4804-b9a3-b3c201f759a1
+
+
+
 
 ## Usage
 

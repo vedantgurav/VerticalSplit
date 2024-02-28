@@ -119,7 +119,7 @@ public struct VerticalSplit<
                         mediumImpact.impactOccurred(intensity: 0.6)
                     }
                 }
-       
+                
                 withTransaction(transaction) {
                     let translation = (initialPartition ?? 0) + value.translation.height
                     let minimalAdjustment = (initialMinimal ? (initialTop ? 8 - lil : lil - 8 - bottomExtraOffset) : 0)
@@ -239,9 +239,13 @@ public struct VerticalSplit<
                         bgColor: bgColor,
                         content: topView,
                         overlay: {
-                            topViewOverlay()
-                                .padding(.horizontal, autoTopOverlay ? 16 : 0)
-                                .fontWeight(autoTopOverlay ? .semibold : .regular)
+                            if autoTopOverlay {
+                                Text(topTitle)
+                                    .padding(.horizontal)
+                                    .fontWeight(.semibold)
+                            } else {
+                                topViewOverlay()
+                            }
                         }
                     )
                     .frame(height: hideBottom ? nil : topHeight + overscroll / 5 )
@@ -260,9 +264,13 @@ public struct VerticalSplit<
                         bgColor: bgColor,
                         content: bottomView,
                         overlay: {
-                            bottomViewOverlay()
-                                .padding(.horizontal, autoBottomOverlay ? 16 : 0)
-                                .fontWeight(autoBottomOverlay ? .semibold : .regular)
+                            if autoBottomOverlay {
+                                Text(bottomTitle)
+                                    .padding(.horizontal)
+                                    .fontWeight(.semibold)
+                            } else {
+                                bottomViewOverlay()
+                            }
                         }
                     )
                     .transaction(value: hideBottom, { t in
@@ -332,7 +340,7 @@ public struct VerticalSplit<
                                 .foregroundStyle(accessory.color)
                                 .frame(width: 20, height: 20)
                         }
-                         .buttonStyle(ScaleDownButtonStyle())
+                        .buttonStyle(ScaleDownButtonStyle())
                     }
                 }
                 
@@ -358,7 +366,7 @@ public struct VerticalSplit<
                                 .foregroundStyle(accessory.color)
                                 .frame(width: 20, height: 20)
                         }
-                         .buttonStyle(ScaleDownButtonStyle())
+                        .buttonStyle(ScaleDownButtonStyle())
                     }
                     if !menuAccessories.isEmpty {
                         Button {
@@ -380,7 +388,7 @@ public struct VerticalSplit<
                                 .scaledToFit()
                                 .frame(width: 20, height: 20)
                         }
-                         .buttonStyle(ScaleDownButtonStyle())
+                        .buttonStyle(ScaleDownButtonStyle())
                     }
                 }
             }
@@ -424,7 +432,7 @@ public struct VerticalSplit<
                             .frame(maxHeight: .infinity)
                             .background(Capsule().fill(bgColor))
                         }
-                         .buttonStyle(ScaleDownButtonStyle())
+                        .buttonStyle(ScaleDownButtonStyle())
                     }
                 }
                 .padding(.horizontal, 8)
@@ -488,7 +496,7 @@ public struct VerticalSplit<
             var t = transaction
             t.animation = .smooth(duration: 0.5)
             withTransaction(t) {
-               didUpdateSplit(split: detent)
+                didUpdateSplit(split: detent)
             }
         }
     }
@@ -566,8 +574,8 @@ public struct VerticalSplit<
         self.bottomView = bottomView
         self.topViewOverlay = topMiniOverlay
         self.bottomViewOverlay = bottomMiniOverlay
-        self.topTitle = topTitle
-        self.bottomTitle = bottomTitle
+        self.topTitle = topTitle.isEmpty ? "Top" : topTitle
+        self.bottomTitle = bottomTitle.isEmpty ? "Bottom" : bottomTitle
         self.autoTopOverlay = false
         self.autoBottomOverlay = false
     }
@@ -580,20 +588,20 @@ public struct VerticalSplit<
     ///   - topView: The content shown in the top view.
     ///   - bottomView: The content shown in the bottom view.
     ///   - topMiniOverlay: A custom overlay for the top view when minimised.
-    init(
+    public init(
         detent: Binding<SplitDetent> = .constant(.fraction(0.5)),
         topTitle: String,
         bottomTitle: String,
         topView: @escaping () -> TopView,
         bottomView: @escaping () -> BottomView,
         topMiniOverlay: @escaping () -> TopViewOverlay
-    ) where BottomViewOverlay == Text {
+    ) where BottomViewOverlay == EmptyView {
         self.topView = topView
         self.bottomView = bottomView
         self.topViewOverlay = topMiniOverlay
-        self.bottomViewOverlay = { Text(bottomTitle) }
-        self.topTitle = topTitle
-        self.bottomTitle = bottomTitle
+        self.bottomViewOverlay = EmptyView.init
+        self.topTitle = topTitle.isEmpty ? "Top" : topTitle
+        self.bottomTitle = bottomTitle.isEmpty ? "Bottom" : bottomTitle
         self.autoTopOverlay = false
         self.autoBottomOverlay = true
         self._detent = detent
@@ -607,20 +615,20 @@ public struct VerticalSplit<
     ///   - topView: The content shown in the top view.
     ///   - bottomView: The content shown in the bottom view.
     ///   - bottomMiniOverlay: A custom overlay for the bottom view when minimised.
-    init(
+    public init(
         detent: Binding<SplitDetent> = .constant(.fraction(0.5)),
         topTitle: String,
         bottomTitle: String,
         topView: @escaping () -> TopView,
         bottomView: @escaping () -> BottomView,
         bottomMiniOverlay: @escaping () -> BottomViewOverlay
-    ) where TopViewOverlay == Text {
+    ) where TopViewOverlay == EmptyView {
         self.topView = topView
         self.bottomView = bottomView
-        self.topViewOverlay = { Text(topTitle) }
+        self.topViewOverlay = EmptyView.init
         self.bottomViewOverlay = bottomMiniOverlay
-        self.topTitle = topTitle
-        self.bottomTitle = bottomTitle
+        self.topTitle = topTitle.isEmpty ? "Top" : topTitle
+        self.bottomTitle = bottomTitle.isEmpty ? "Bottom" : bottomTitle
         self.autoTopOverlay = true
         self.autoBottomOverlay = false
         self._detent = detent
@@ -634,19 +642,19 @@ public struct VerticalSplit<
     ///   - bottomTitle: A title describing the bottom view, shown when the view is minimised.
     ///   - topView: The content shown in the top view.
     ///   - bottomView: The content shown in the bottom view.
-    init(
+    public init(
         detent: Binding<SplitDetent> = .constant(.fraction(0.5)),
         topTitle: String,
         bottomTitle: String,
         topView: @escaping () -> TopView,
         bottomView: @escaping () -> BottomView
-    ) where TopViewOverlay == Text, BottomViewOverlay == Text {
+    ) where TopViewOverlay == EmptyView, BottomViewOverlay == EmptyView {
         self.topView = topView
         self.bottomView = bottomView
-        self.topViewOverlay = { Text(topTitle) }
-        self.bottomViewOverlay = { Text(bottomTitle) }
-        self.topTitle = topTitle
-        self.bottomTitle = bottomTitle
+        self.topViewOverlay = EmptyView.init
+        self.bottomViewOverlay = EmptyView.init
+        self.topTitle = topTitle.isEmpty ? "Top" : topTitle
+        self.bottomTitle = bottomTitle.isEmpty ? "Bottom" : bottomTitle
         self.autoTopOverlay = true
         self.autoBottomOverlay = true
         self._detent = detent

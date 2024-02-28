@@ -1,6 +1,11 @@
 # VerticalSplit
 This package is ***heavily*** inspired by the splitscreen impelementation from the [Amie](https://www.amie.so) iOS app. This is my attempt to recreate it
 
+## Examples
+
+https://github.com/vedantgurav/VerticalSplit/assets/40576802/1a235460-53fd-49c2-935f-51a1fc190376
+https://github.com/vedantgurav/VerticalSplit/assets/40576802/c86c2b49-7636-4a27-9c12-1fd66566537f
+
 ## Usage
 
 ```swift

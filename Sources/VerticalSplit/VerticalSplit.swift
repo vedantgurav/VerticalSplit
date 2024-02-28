@@ -151,7 +151,7 @@ public struct VerticalSplit<
                     
                     if (oldPartition < notchPartition && notchPartition < partition) ||
                         (oldPartition > notchPartition && notchPartition > partition) {
-                        rigidImpact.impactOccurred(intensity: 0.8)
+                        rigidImpact.impactOccurred(intensity: 0.5)
                     }
                 }
             }
@@ -201,17 +201,17 @@ public struct VerticalSplit<
                         newSplit = .bottomFull
                         partition = -(cardHeight - lil)
                         hideBottom = false
-                        mediumImpact.impactOccurred(intensity: 0.8)
+                        mediumImpact.impactOccurred(intensity: 0.6)
                     } else if overscroll > 20 {
                         hideTop = false
                         newSplit = .topFull
                         partition = (cardHeight - lil)
                         hideBottom = true
-                        mediumImpact.impactOccurred(intensity: 0.8)
+                        mediumImpact.impactOccurred(intensity: 0.6)
                     } else {
                         hideTop = false
                         hideBottom = false
-                        rigidImpact.impactOccurred(intensity: 0.8)
+                        rigidImpact.impactOccurred(intensity: 0.6)
                     }
                     overscroll = 0
                     translationBeforeOverscroll = 0
@@ -321,8 +321,9 @@ public struct VerticalSplit<
                     ForEach(leadingAccessories) { accessory in
                         Button(action: {
                             accessory.action()
+                            lightImpact.impactOccurred(intensity: 0.5)
                             if shouldLog {
-                                actionLogger.info("Accessory item tapped: \(accessory.title)")
+                                actionLogger.info("Leading accessory action: \(accessory.title)")
                             }
                         }) {
                             Image(systemName: accessory.systemName)
@@ -344,7 +345,13 @@ public struct VerticalSplit<
                 
                 HStack(spacing: 8) {
                     ForEach(trailingAccessories) { accessory in
-                        Button(action: accessory.action) {
+                        Button(action: {
+                            accessory.action()
+                            lightImpact.impactOccurred(intensity: 0.5)
+                            if shouldLog {
+                                actionLogger.info("Trailing accessory action: \(accessory.title)")
+                            }
+                        }) {
                             Image(systemName: accessory.systemName)
                                 .resizable()
                                 .scaledToFit()
@@ -355,6 +362,7 @@ public struct VerticalSplit<
                     }
                     if !menuAccessories.isEmpty {
                         Button {
+                            mediumImpact.impactOccurred(intensity: 0.5)
                             withTransaction(transaction) {
                                 if currentSpacing == spacing {
                                     currentSpacing = spacing * 2
@@ -388,12 +396,13 @@ public struct VerticalSplit<
                 HStack(spacing: 8) {
                     ForEach(menuAccessories) { accessory in
                         Button {
+                            mediumImpact.impactOccurred(intensity: 0.5)
                             withTransaction(transaction) {
                                 currentSpacing = spacing
                                 topHeight = cardHeight + partition
                             }
                             if shouldLog {
-                                actionLogger.info("Menu item tapped: \(accessory.title)")
+                                actionLogger.info("Menu accessory action: \(accessory.title)")
                             }
                             accessory.action()
                         } label: {
